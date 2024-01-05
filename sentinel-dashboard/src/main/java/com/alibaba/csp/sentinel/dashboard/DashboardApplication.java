@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DashboardApplication {
 
     public static void main(String[] args) {
+        System.setProperty("nacos.logging.config", "classpath:logback-sentinel.xml");
         triggerSentinelInit();
         SpringApplication.run(DashboardApplication.class, args);
     }

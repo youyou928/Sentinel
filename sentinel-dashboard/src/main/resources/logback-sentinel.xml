@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false" scan="false" scanPeriod="1 seconds">
+	<springProperty scope="context" name="LOG_HOME" source="logging.file.path" defaultValue="${user.home}/sentinel"/>
+	<springProperty scope="context" name="FILE_NAME" source="logging.file.only-name" defaultValue="sentinel"/>
+	<springProperty scope="context" name="RETAIN_COUNT" source="logging.file.retain-count" defaultValue="7"/>
+	<springProperty scope="context" name="MAX_FILE_SIZE" source="logging.file.max-file-size" defaultValue="10MB"/>
+
+	<conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+	<conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+	<conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+	<property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+	<!-- Console -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+			<charset>utf8</charset>
+		</encoder>
+	</appender>
+
+	<appender name="LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/${FILE_NAME}.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/${FILE_NAME}_bk-%d{yyyy-MM-dd}-%i.log.gz</FileNamePattern>
+			<MaxHistory>${RETAIN_COUNT}</MaxHistory>
+			<MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
+		</rollingPolicy>
+
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5p [%file:%line] - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.alibaba.nacos" level="INFO"/>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="LOG_FILE"/>
+	</root>
+</configuration>
